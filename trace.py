@@ -8,49 +8,50 @@
 """
 Function decorator for tracing recursive calls.
 
-Includes the @trace.trace decorator and several example functions.
+Includes the @trace.ftrace decorator and several example functions.
 """
 
-class trace():
+def ftrace( function ):
     """
     Function decorator for tracing recursive calls.
 
-    You can trace a function by decorating it with @trace at defintion, as in foo().
-    Note that you can also use trace by decorating it directly:
+    You can ftrace a function by decorating it with @ftrace at defintion, as in foo().
+    Note that you can also use ftrace by decorating it directly:
 
-    foo = trace(foo)
+    foo = ftrace(foo)
 
-    But recursive calls to foo will not be traced, because they refer to the old
+    But recursive calls to foo will not be ftraced, because they refer to the old
     defintion of foo. This is not a problem with the @ decoration technique.
 
     TODO:
     - Make pretty
-    - Fix docstrings in pydoc. (Dynamicaly generating anonymous functions seems
-      to do the trick. I just hope that I can keep my data private.) Closures?
     """
 
-    calldepth = 0
-    indentation_string = "|  "
+    ftrace.indentation_string = "|  "
+    if "calldepth" not in ftrace.__dict__:
+        ftrace.calldepth = 0
 
-    def __init__( self, function ):
-            self.f = function
-            self.__doc__ = function.__doc__
+    def decoration( *args, **kwargs ):
+        function_string = function.__name__ + "( " + str( args ) + " " + str( kwargs ) +  " )"
+        print str(ftrace.indentation_string * ftrace.calldepth) + function_string
 
-    def __call__( self, *args, **kwargs ):
-        function_string = self.f.__name__ + "( " + str( args ) + " " + str( kwargs ) +  " )"
-        print str(trace.indentation_string * trace.calldepth) + function_string
+        # Use ftrace.calldepth to modify the variable at the class scope.
+        ftrace.calldepth += 1
+        retval = function( *args, **kwargs )
+        ftrace.calldepth -= 1
 
-        # Use trace.calldepth to modify the variable at the class scope.
-        trace.calldepth += 1
-        retval = self.f( *args, **kwargs )
-        trace.calldepth -= 1
-
-        print str(trace.indentation_string * trace.calldepth) + function_string +\
+        print str(ftrace.indentation_string * ftrace.calldepth) + function_string +\
             " returns: " + str(retval)
 
         return retval
 
-@trace
+    # Preserve docstrings for the function we're decorating.
+    decoration.__name__ = function.__name__
+    decoration.__doc__ = function.__doc__
+
+    return decoration
+
+@ftrace
 def foo( num = 10 ):
     """
     Used for testing functions with zero or one arguments, using default
@@ -60,7 +61,7 @@ def foo( num = 10 ):
         foo( num - 1)
         return num
 
-@trace
+@ftrace
 def foobar( const, num = 10 ):
     """
     Used for testing calls that can have multiple (or singular) parameters and
@@ -70,7 +71,7 @@ def foobar( const, num = 10 ):
         foobar( const, num - 1 )
         return const
 
-@trace
+@ftrace
 def one( num = 10 ):
     """
     Demonstrates recursive calls between two functions.
@@ -79,11 +80,11 @@ def one( num = 10 ):
         two( num - 1 )
         return num
 
-@trace
+@ftrace
 def two( num = 10 ):
     """
     See one().
-    For a good time, try removing @trace from either declaration and see what
+    For a good time, try removing @ftrace from either declaration and see what
     happns.
     """
     if num > 0:
