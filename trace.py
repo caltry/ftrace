@@ -59,7 +59,7 @@ def foo( num = 10 ):
     """
     if num > 0:
         foo( num - 1)
-	return num
+    return num
 
 @ftrace
 def foobar( const, num = 10 ):
@@ -69,7 +69,7 @@ def foobar( const, num = 10 ):
     """
     if num > 0:
         foobar( const, num - 1 )
-	return const
+    return const
 
 @ftrace
 def one( num = 10 ):
@@ -78,7 +78,7 @@ def one( num = 10 ):
     """
     if num > 0:
         two( num - 1 )
-	return num
+    return num
 
 @ftrace
 def two( num = 10 ):
@@ -89,4 +89,4 @@ def two( num = 10 ):
     """
     if num > 0:
         one( num - 1 )
-	return num
+    return num
