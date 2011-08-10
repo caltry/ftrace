@@ -9,26 +9,43 @@
 Function decorator for tracing recursive calls.
 
 Includes the @trace.ftrace decorator and several example functions.
+
+TODO:
+- Implement unftrace() -- could be tricky...
 """
 
 def ftrace( function ):
     """
     Function decorator for tracing recursive calls.
 
-    You can ftrace a function by decorating it with @ftrace at defintion, as in foo().
+    You can ftrace a function by decorating it with @ftrace at defintion, as in
+    foo().
     Note that you can also use ftrace by decorating it directly:
 
     foo = ftrace(foo)
 
-    But recursive calls to foo will not be ftraced, because they refer to the old
-    defintion of foo. This is not a problem with the @ decoration technique.
+    But recursive calls to foo will not be ftraced, because they refer to the
+    old defintion of foo. This is not a problem with the @ decoration
+    technique.
+
+    Also, if you're using certain decorators, such as the magic @classmethod
+    and @staticmethod, you should have them exicute _after_ ftrace, like so:
+
+    @staticmethod
+    @ftrace
+    def foo(): ...
+
+    or
+
+    foo = staticmethod( ftrace( foo ) )
 
     TODO:
     - Make pretty
+    - Gracefully handle @classmethod and @staticmethod
     """
 
     ftrace.indentation_string = "|  "
-    if "calldepth" not in ftrace.__dict__:
+    if not hasattr( ftrace, "calldepth" ):
         ftrace.calldepth = 0
 
     def decoration( *args, **kwargs ):
@@ -90,3 +107,27 @@ def two( num = 10 ):
     if num > 0:
         one( num - 1 )
     return num
+
+class test():
+    @ftrace
+    def method(self):
+        """
+        An object method.
+        """
+        return
+
+    @classmethod
+    @ftrace
+    def cls_method(cls):
+        """
+        A class method.
+        """
+        return
+
+    @staticmethod
+    @ftrace
+    def static_method():
+        """
+        A static method.
+        """
+        return
