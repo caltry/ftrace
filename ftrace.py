@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 # Author: David Larsen <dcl9934@cs.rit.edu>
 # Date: Mon, 08 Aug 2011 05:23:39 -0400
 # License: Public Domain
@@ -41,8 +39,11 @@ def ftrace( function ):
 
     TODO:
     - Make pretty
-    - Gracefully handle @classmethod and @staticmethod
     """
+
+    # Actions on variables that begin with `ftrace.' mean to do so at the class
+    # scope. This allows state, such as call depth, to be persistent through
+    # different function calls. See test.one() for an example.
 
     ftrace.indentation_string = "|  "
     if not hasattr( ftrace, "calldepth" ):
@@ -50,15 +51,15 @@ def ftrace( function ):
 
     def decoration( *args, **kwargs ):
         function_string = function.__name__ + "( " + str( args ) + " " + str( kwargs ) +  " )"
-        print (ftrace.indentation_string * ftrace.calldepth) + function_string
+        print((ftrace.indentation_string * ftrace.calldepth) + function_string)
 
         # Use ftrace.calldepth to modify the variable at the class scope.
         ftrace.calldepth += 1
         retval = function( *args, **kwargs )
         ftrace.calldepth -= 1
 
-        print (ftrace.indentation_string * ftrace.calldepth) + function_string +\
-            " returns: " + str(retval)
+        print((ftrace.indentation_string * ftrace.calldepth) +\
+            function_string + " returns: " + str(retval))
 
         return retval
 
