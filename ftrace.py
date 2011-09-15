@@ -37,7 +37,7 @@ def ftrace( function ):
 
     # Actions on variables that begin with `ftrace.' mean to do so at the class
     # scope. This allows state, such as call depth, to be persistent through
-    # different function calls. See test.one() for an example.
+    # different function calls. See examples.one() for an example.
 
     # Print the number of stack frames we've traced through.
     ftrace.PRINT_CALLDEPTH_NUM = True
