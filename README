@@ -1,0 +1,46 @@
+Ftrace - A recursive function call tracer for python.
+
+Description
+-----------
+
+Ftrace is designed to make it easy to debug the behavior of recursive functions
+by printing a function and the parameters it's called with at each invocation.
+
+Use
+---
+
+To use ftrace, import the ftrace function:
+
+	from ftrace import ftrace
+
+Then, for any function you want to trace add @ftrace above the definiton:
+
+	@ftrace
+	def your_function:
+		...
+
+Behavior
+--------
+
+When you run the trace, call-depths and ASCII art are printed along with
+functions and their parameters. For example, running examples.one(5):
+
+	>>> import examples
+	>>> examples.one(5)
+		0 one( (5,) {} )
+		1 |  two( (4,) {} )
+		2 |  |  one( (3,) {} )
+		3 |  |  |  two( (2,) {} )
+		4 |  |  |  |  one( (1,) {} )
+		5 |  |  |  |  |  two( (0,) {} )
+		5 |  |  |  |  |  two( (0,) {} ) returns: 0
+		4 |  |  |  |  one( (1,) {} ) returns: 1
+		3 |  |  |  two( (2,) {} ) returns: 2
+		2 |  |  one( (3,) {} ) returns: 3
+		1 |  two( (4,) {} ) returns: 4
+		0 one( (5,) {} ) returns: 5
+	5
+	>>> 
+
+Printing the call depth or the ASCII art can be disabled by toggling
+ftrace.PRINT_CALLDEPTH_NUM and ftrace.PRINT_ASCII_ART, respectively.
