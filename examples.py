@@ -43,7 +43,7 @@ def two( num = 10 ):
 @ftrace
 def qsort( unsorted_list ):
     """
-    Quicksort
+    A naive Quicksort implementation.
     """
     if len( unsorted_list ) < 2:
         return unsorted_list

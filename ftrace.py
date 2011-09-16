@@ -82,4 +82,4 @@ def _print_call_depth( calldepth, function_string ):
     if ftrace.PRINT_ASCII_ART:
         indentation_string += ftrace.INDENTATION_STRING * calldepth
 
-    print( indentation_string + function_string);
+    print( indentation_string + function_string );
